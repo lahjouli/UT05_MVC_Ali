@@ -55,4 +55,11 @@ mySystem.removeUser(myUser);
 // Iteramos por los usuarios del sistema
 for (const user of mySystem.users) {
   console.log(user.name);
-}
+
+
+
+}//
+
+let a = "a";
+
+
