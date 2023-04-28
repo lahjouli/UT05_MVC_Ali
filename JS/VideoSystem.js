@@ -1,10 +1,18 @@
 
 "use strict";
 
-import * as Objetos from "./objetos.js";
+import {
+    Person,
+    Category,
+    Production,
+    User,
+    Movie,
+    Resource,
+    Serie,
+} from "./objetos.js";
 
 
-const VideoSystem = (function () {
+export const VideoSystem = (function () {
 
     let instance = null; // Variable que almacena la única instancia del objeto VideoSystem
 
@@ -82,7 +90,7 @@ const VideoSystem = (function () {
                 }
 
                 // Verificar que la categoría no existe en el sistema
-                const categoryPosition = this.#getCategoryPosition(category.name);
+                const categoryPosition = this.getCategoryPosition(category.name);
                 if (categoryPosition !== -1) {
                     throw new Error(`La categoría ${category.name} ya existe en el sistema`);
                 }
@@ -137,6 +145,51 @@ const VideoSystem = (function () {
                 // Retornar la longitud actual del array de categorías
                 return this.#categories.length;
             }
+
+
+
+            /**
+             * Asigna una categoría a una o varias producciones.
+             *
+             * @param {object} category - Objeto de la categoría a asignar.
+             * @param {array} productions - Array de objetos de las producciones a asignar.
+             * @throws {Error} - Si no se especifica una categoría o al menos una producción.
+             */
+            assignCategory(category, ...productions) {
+                // Se verifica si se ha especificado una categoría y al menos una producción, de lo contrario se lanza un error
+                if (!category || !productions.length) {
+                    throw new Error("Se deben especificar una categoría y al menos una producción");
+                }
+
+                // Se obtiene la posición de la categoría en el array de categorías
+                let posCat = this.#categories.findIndex(cat => cat.category.name === category.name);
+
+                // Si la categoría no existe en el sistema, se crea una nueva categoría con el nombre indicado y se añade al array de categorías
+                if (posCat === -1) {
+                    this.addCategory(category);
+                    posCat = this.#categories.length - 1; // actualizamos la posición de la categoría recién añadida
+                }
+
+                // Se recorren las producciones y se les asigna la categoría
+                productions.forEach(production => {
+                    // Se verifica si la producción ya existe en el sistema, en cuyo caso se actualiza su categoría
+                    const existingProd = this.#productions.find(prod => prod.title === production.title);
+                    if (existingProd) {
+                        existingProd.category = category;
+                    } else {
+                        // Si la producción no existe, se agrega al sistema y se le asigna la categoría
+                        this.#productions.push(production);
+                        production.category = category;
+                    }
+                });
+
+                // Se agrega la categoría a la lista de categorías asociadas a las producciones
+                this.#categories[posCat].productions.push(...productions);
+
+               return this.#categories[posCat].productions.length;
+            }
+
+
 
 
             // Método getter que devuelve un generador para iterar por los usuarios del sistema
@@ -209,6 +262,18 @@ const VideoSystem = (function () {
                 return generator(); // retornar el generador
             }
 
+
+
+            get categories() {
+                const categories = this.#categories; // obtener las producciones
+                function* generator() { // crear un generador
+                    for (let i = 0; i < categories.length; i++) { // iterar sobre las producciones
+                        yield categories[i]; // devolver la producción actual
+                    }
+                }
+                return generator(); // retornar el generador
+            }
+
             /**
              * Añade una nueva producción al sistema.
              * @param {Production} production - Objeto Production a añadir.
@@ -234,91 +299,37 @@ const VideoSystem = (function () {
             }
 
 
-            /**
-             * Elimina una producción del sistema.
-             * Objeto Production
-             * Number con el nº de elementos
-             * - La producción no puede ser null o no es un objeto Production.
-             * - La producción no está registrada
-             * @param {Production} production - La producción a eliminar
-             * @returns {number} El número actual de producciones en el sistema después de la eliminación.
-             */
-            removeProduction(production) {
-                // Comprobar que la producción es un objeto Production y no es null
-                if (!(production instanceof Production) || !production) {
-                    throw new Error('La producción no es un objeto Production o es null');
+
+
+            // Devuelve un iterador que permite recuperar las producciones de una categoría
+            *getProductionsCategory(category) {
+                // Comprobamos que la categoría es una instancia de Category
+                if (!(category instanceof Category) || category == null) {
+                    throw new Error("Invalid category object.");
                 }
 
-                // Buscar la producción en el sistema
-                const index = this.#productions.findIndex((p) => p.equals(production));
-                if (index === -1) {
-                    throw new Error('La producción no está registrada en el sistema');
+                // Buscamos la posición de la categoría
+                const categoryPosition = this.getCategoryPosition(category.name);
+
+                // Si la categoría no existe se lanza una excepción
+                if (categoryPosition === -1) {
+                    throw new Error("Category not found.");
                 }
 
-                // Eliminar la producción del sistema
-                this.#productions.splice(index, 1);
-
-                // Devolver el número actual de producciones en el sistema
-                return this.#productions.length;
+                // Iteramos sobre las producciones de la categoría y las devolvemos usando yield
+                for (const production of this.#categories[categoryPosition].productions) {
+                    yield production;
+                }
             }
 
-            // ...rest 
-            assignCategory(category, ...producciones) {
-                // Se verifica si se ha especificado una categoría y al menos una producción, de lo contrario se lanza un error
-                if (!category || !producciones.length) {
-                    throw new Error("Se deben especificar una categoría y al menos una producción");
-                }
-            
-                // Se obtiene la posición de la categoría en el array de categorías
-                let posCat = this.#categories.findIndex(cat => {
-                    return category.name == cat.name;
-                });
-            
-                // Si la categoría no existe en el sistema, se crea una nueva categoría con el nombre indicado y se añade al array de categorías.
-                if (posCat == -1) {
-                    this.addCategory(category);
-                }
-            
-                // Se obtiene de nuevo la posición de la categoría en el array de categorías
-                let postCatAs = this.getCategoryPosition(category.name);
-            
-                // Función que verifica si la producción ya existe en el array de producciones
-                let verificar = function (prod) {
-                    return !this.#productions.some(prodSistema => {
-                        return prodSistema.title === prod.title;
-                    });
-                }
-            
-                // Se filtran las producciones que no existen en el sistema
-                let produccionesFiltradas = producciones.filter(verificar);
-            
-                // Se agregan las producciones al sistema
-                produccionesFiltradas.forEach(produccion => {
-                    this.#productions.push(produccion);
-                });
-            
 
 
-                // Si se especificó una categoría, se asignan las producciones a la categoría si no estaban previamente asignadas
-                if (postCatAs != -1) {
 
-                    // utilizamos un  forEach para recorrer las producciones y verificar si ya están asignadas a la categoría
-                    // antes de agregarals a la categoría
-                    produccionesFiltradas.forEach(produccion => {
-                        // Se verifica si la producción ya está asignada a la categoría
-                        let produccionEnCategoria = this.#categories[postCatAs].productions.some(produccionCat => {
-                            return produccionCat.title === produccion.title;
-                        });
-                        // Si no está asignada, se agrega a la categoría
-                        if (!produccionEnCategoria) {
-                            this.#categories[postCatAs].productions.push(produccion);
-                        }
-                    });
-                }
 
-                return this.#categories[postCatAs].productions.length;
-            }
-            
+
+
+
+
 
 
 

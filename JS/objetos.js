@@ -1,6 +1,6 @@
 "use strict";
 
-class Person {
+export class Person {
     #name;
     #lastName1;
     #lastName2;
@@ -66,7 +66,7 @@ class Person {
 
 
 
-class Category {
+export class Category {
     #name;
     #description;
 
@@ -104,11 +104,14 @@ class Category {
 }
 
 
-class Resource {
+export class Resource {
     #duration;
     #link;
 
     constructor(duration, link) {
+        if (!duration || !link) {
+            throw new Error("Se requieren ambos parámetros 'duration' y 'link'");
+        }
         this.#duration = duration;
         this.#link = link;
     }
@@ -117,7 +120,7 @@ class Resource {
 }
 
 
-class Production {
+export class Production {
 
 
     #title;
@@ -130,7 +133,7 @@ class Production {
     constructor(title, publication, synopsis, image, nacionality) {
         // Evita que se pueda instanciar directamente la clase abstracta Production
         if (new.target === Production) {
-            throw new TypeError("Cannot instantiate abstract class Production");
+            throw new TypeError("No se pueda instanciar directamente la clase abstracta Production");
         }
         this.#title = title;
         this.#publication = publication;
@@ -139,10 +142,14 @@ class Production {
         this.#nacionality = nacionality;
     }
 
+    get title(){
+        return this.#title;
+    }
+
 }
 
 
-class Movie extends Production {
+export class Movie extends Production {
     #resource;
     #locations;
 
@@ -205,7 +212,7 @@ class Movie extends Production {
 
 
 
-class Serie extends Production {
+export class Serie extends Production {
     #resources;
     #locations;
     #seasons;
@@ -246,7 +253,7 @@ class Serie extends Production {
 
 
 
-class User {
+export class User {
     #username;
     #email;
     #password;
@@ -285,13 +292,13 @@ class User {
 
 
 
-class Coordinate {
+export class Coordinate {
 
-    #atitude //Latitud de la ubicación
+    #latitude//Latitud de la ubicación
     #longitude   //Longitud de la ubicación.
 
-    constructor(atitude, longitude) {
-        this.#atitude = atitude;
+    constructor(latitude, longitude) {
+        this.#latitude = latitude;
         this.#longitude = longitude;
 
     }
@@ -301,8 +308,8 @@ class Coordinate {
     }
 
 
-    get actitude() {
-        return this.#altitude;
+    get latitude() {
+        return this.#latitude;
     }
 
 }
