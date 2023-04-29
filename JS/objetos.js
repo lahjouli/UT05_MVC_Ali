@@ -6,14 +6,16 @@ export class Person {
     #lastName2;
     #born;
     #picture;
+    #ID; // ID añadido para identdicar a los actores
 
 
-    constructor(name, lastName1, born, lastName2, picture) {
+    constructor(name, lastName1, born, lastName2, picture, ID) {
         this.#name = name;
         this.#lastName1 = lastName1;
         this.#lastName2 = lastName2;
         this.#born = born;
         this.#picture = picture;
+        this.#ID = ID;
     }
 
     // getters
@@ -58,6 +60,10 @@ export class Person {
         this.#picture = picture;
     }
 
+    get ID(){
+        return this.#ID;
+    }
+
     // toString method
     toString() {
         return `${this.#name} ${this.#lastName1} ${this.#lastName2} (${this.#born})`;
@@ -70,7 +76,7 @@ export class Category {
     #name;
     #description;
 
-    constructor(name, description) {
+    constructor(name, description="") {
         this.#name = name;
 
         // Si el parámetro "description" es falsy (undefined, null, 0, false, ''), 
@@ -110,7 +116,7 @@ export class Resource {
 
     constructor(duration, link) {
         if (!duration || !link) {
-            throw new Error("Se requieren ambos parámetros 'duration' y 'link'");
+            throw new ResourceError("Se requieren ambos parámetros 'duration' y 'link'");
         }
         this.#duration = duration;
         this.#link = link;
@@ -163,7 +169,8 @@ export class Movie extends Production {
      * @param {String} synopsis Resumen del contenido de la película
      * @param {String} image Ruta donde está ubicada la imagen
      */
-    constructor(title, publication, resource, locations, nationality, synopsis, image) {
+    constructor(title, publication, resource = new Resource(1, "www.example1.com"), locations = new Resource(1, "www.example1.com")
+    , nationality, synopsis, image) {
         super(title, publication, nationality, synopsis, image);
         this.#resource = resource;
         this.#locations = locations;

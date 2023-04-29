@@ -26,9 +26,13 @@ export const VideoSystem = (function () {
             #productions = []; // Atributo privado para las producciones del sistema
             #actors = []; // Atributo privado para los actores del sistema
             #directors = []; // Atributo privado para los directores del sistema
+
+
+            /*
             #productionsByCategory = []; // Atributo privado para las producciones por categoría del sistema
             #productionsByDirector = []; // Atributo privado para las producciones por director del sistema
             #productionsByActor = []; // Atributo privado para las producciones por actor del sistema
+            */
 
             #defaultCategory = new Category("default", "Default category"); // Nueva propiedad para la categoría por defecto
 
@@ -186,7 +190,7 @@ export const VideoSystem = (function () {
                 // Se agrega la categoría a la lista de categorías asociadas a las producciones
                 this.#categories[posCat].productions.push(...productions);
 
-               return this.#categories[posCat].productions.length;
+                return this.#categories[posCat].productions.length;
             }
 
 
@@ -253,13 +257,13 @@ export const VideoSystem = (function () {
 
 
             get productions() {
-                const productions = this.#productions; // obtener las producciones
+                const productions = this.#productions; // 
                 function* generator() { // crear un generador
-                    for (let i = 0; i < productions.length; i++) { // iterar sobre las producciones
-                        yield productions[i]; // devolver la producción actual
+                    for (let i = 0; i < productions.length; i++) { // iterar
+                        yield productions[i]; // devolver la produccion actual
                     }
                 }
-                return generator(); // retornar el generador
+                return generator(); // retornarmos el generador
             }
 
 
@@ -320,6 +324,193 @@ export const VideoSystem = (function () {
                 for (const production of this.#categories[categoryPosition].productions) {
                     yield production;
                 }
+            }
+
+            // Elimina una producción de una categoría
+            deassignCategory(category, ...productions) {
+                if (!(category instanceof Category))
+                    throw new TypeError("category must be an instance of Category");
+                if (!productions.every(production => production instanceof Production) || productions.length == 0)
+                    throw new TypeError("productions must be an array of Production instances and cannot be empty");
+
+                // Obtenemos la posición de la categoría en array de  categorías
+                let posCategory = this.getCategoryPosition(category.name);
+
+                // Si la categoría existe en el sistema
+                if (posCategory !== -1) {
+                    // Removemos las producciones de la categoría
+                    this.removeProductions(this.#categories[posCategory].productions, productions);
+
+                    // Retornamos el número de producciones que quedan en la categoría
+                    return this.#categories[posCategory].productions.length;
+                }
+
+                // Si la categoría no existe, retornamos -1
+                return -1;
+            };
+
+
+
+            // Método para remover producciones 
+            removeProductions(productionsArray, productionsToRemove) {
+
+                for (let production of productionsToRemove) {
+                    let index = productionsArray.indexOf(production);
+
+                    // Si la producción existe en el array, la removemos
+                    if (index !== -1) {
+                        productionsArray.splice(index, 1);
+                    }
+                }
+            };
+
+
+
+            // Actor 
+
+            addActor(actor) {
+                //El actor no puede ser null o no es un objeto Person.
+                if (actor instanceof Person || !actor) {
+                    throw new Error("Controlado: El actor debe ser una instacia de la clase Person");
+                }
+
+                // Si El actor ya existe.
+                if (this.#actorPos(actor.ID) != -1) {
+                    throw new Error("Controlado: ¡El actor ya existe!");
+                }
+
+                // Añadirmos el actor al array de actores 
+                this.#actors.push(
+                    {
+                        actor: actor, // actor 
+                        productions: [], // producciones asocciadas al actor
+                    }
+                );
+
+                return this.#actors.length;
+            };
+
+
+
+            // devuelve la posicion del onjeto literal que contiene el actor 
+            #actorPos(actorID) {
+                for (let i = 0; i < this.#actors.length; i++) {
+                    let obj = this.#actors[i].actor;
+                    if (obj.actor.ID === actorID) {
+                        return i; // devolvemos la posicion del actor 
+                    }
+                }
+                return -1;
+            }
+
+            removeActor(actor) {
+
+                //El actor no puede ser null o no es un objeto Person.
+                if (actor instanceof Person || !actor) {
+                    throw new Error("Controlado: El actor debe ser una instacia de la clase Person");
+                }
+
+                let index = this.#actorPos(actor.ID);
+
+                // Si El actor NO existe.
+                if (index == -1) {
+                    throw new Error("Controlado: ¡El actor NO existe!");
+                }
+
+                // borramos el actor
+                this.#actors.splice(index, 1);
+
+                return this.#actors.length;
+            }
+
+            get directors() {
+                const directors = this.#directors;
+                function* generator() {
+                    for (let i = 0; i < directors.length; i++) {
+                        yield directors[i]; // 
+                    }
+                }
+                return generator();
+
+            }
+
+
+
+            // metodo privado
+            #findDirectorPos(directorID) {
+                let pos = -1;
+                for (let i = 0; i < this.#directors.length; i++) {
+                    if (obj.director.ID === directorID) {
+                        pos = i;
+                    }
+                }
+                return pos;
+            }
+
+            addDirector(director) {
+                // El director no puede ser null o no es un objeto Person.
+                if (!director || !(director instanceof Person)) {
+                    throw new Error('El tiene que ser un objeto Person.');
+                }
+
+                // Comprobar que el director no existe ya en el sistema
+                if (this.#directors.find((d) => d.title === director.title)) {
+                    throw new Error("El director " + director.name + " ya existe en el sistema");
+                }
+
+                this.#directors.push(
+                    {
+                        director: director,
+                        productions: [],
+
+                    }
+                );
+
+                return this.#directors.length;
+            }
+
+            removeDirector(director) {
+                // El director no puede ser null o no es un objeto Person.
+                if (!director || !(director instanceof Person)) {
+                    throw new Error('El tiene que ser un objeto Person.');
+                }
+
+                const index = this.#findDirectorPos(director.ID);
+
+                //  El director no existe en el sistema
+                if (index === -1) {
+                    throw new Error("El director " + director.name + " ya existe en el sistema");
+                }
+
+                this.#directors.splice(index, 1);
+
+                //
+                return this.#directors.length;
+            }
+
+
+            // Asignar una o más producciones a un director
+            //Si el director o el objeto Production no existen se añaden al sistem
+            assignDirector(director, ...producciones) {
+
+                // Si el director  es null 
+                if (!director) {
+                    throw new Error('El director tiene que ser un objeto Person.');
+                }
+
+
+                // Si las algun objeto de  "Productions" es null
+                if (producciones.forEach(prod => { prod instanceof Production })) {
+
+                }
+
+                if (this.#directorPos == -1) {
+                    this.addDirector(actor);
+                }
+
+                //
+
+                return this.#directors.length;
             }
 
 
