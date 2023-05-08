@@ -60,7 +60,7 @@ export class Person {
         this.#picture = picture;
     }
 
-    get ID(){
+    get ID() {
         return this.#ID;
     }
 
@@ -76,7 +76,7 @@ export class Category {
     #name;
     #description;
 
-    constructor(name, description="") {
+    constructor(name, description = "") {
         this.#name = name;
 
         // Si el parámetro "description" es falsy (undefined, null, 0, false, ''), 
@@ -127,14 +127,11 @@ export class Resource {
 
 
 export class Production {
-
-
     #title;
     #publication;
     #synopsis;
     #image;
     #nacionality;
-
 
     constructor(title, publication, synopsis, image, nacionality) {
         // Evita que se pueda instanciar directamente la clase abstracta Production
@@ -148,7 +145,7 @@ export class Production {
         this.#nacionality = nacionality;
     }
 
-    get title(){
+    get title() {
         return this.#title;
     }
 
@@ -160,21 +157,22 @@ export class Movie extends Production {
     #locations;
 
     /**
-     * Constructor de la clase Movie
-     * @param {String} title Título de la película
-     * @param {Date} publication Fecha de publicación de la película
-     * @param {Resource} resource Recurso con el contenido de la película
-     * @param {[Coordinate]} locations Array con diferentes ubicaciones donde transcurre la película
-     * @param {String} nationality Nacionalidad de la película
-     * @param {String} synopsis Resumen del contenido de la película
-     * @param {String} image Ruta donde está ubicada la imagen
-     */
-    constructor(title, publication, resource = new Resource(1, "www.example1.com"), locations = new Resource(1, "www.example1.com")
-    , nationality, synopsis, image) {
-        super(title, publication, nationality, synopsis, image);
+    * Constructor de la clase Movie
+    * @param {String} title Título de la película
+    * @param {Date} publication Fecha de publicación de la película
+    * @param {String} synopsis Resumen del contenido de la película
+    * @param {String} image Ruta donde está ubicada la imagen
+    * @param {String} nationality Nacionalidad de la película
+    * @param {Resource} resource Recurso con el contenido de la película
+    * @param {[Coordinate]} locations Array con diferentes ubicaciones donde transcurre la película
+    */
+    // Cambiar el orden de los parámetros para que coincida con el de la clase Production
+    constructor(title, publication, synopsis, image, nationality, resource = new Resource(1, "www.example1.com"), locations = []) {
+        super(title, publication, synopsis, image, nationality);
         this.#resource = resource;
         this.#locations = locations;
     }
+
 
     /**
      * Getter de la propiedad resource
@@ -220,12 +218,10 @@ export class Movie extends Production {
 
 
 export class Serie extends Production {
-    #resources;
-    #locations;
-    #seasons;
+    #resources; #locations; #seasons;
 
-    constructor(title, nationality, publication, synopsis, image, resources, locations, seasons) {
-        super(title, nationality, publication, synopsis, image);
+    constructor(title, publication, synopsis, image, nationality, resources, locations, seasons) {
+        super(title, publication, synopsis, image, nationality);
         this.#resources = resources;
         this.#locations = locations;
         this.#seasons = seasons;
