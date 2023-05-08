@@ -200,7 +200,7 @@ export const VideoSystem = (function () {
                 }
 
                 // Buscar el índice del usuario en el array de usuarios
-                const index = this.#users.findIndex(u => u.number === user.number);
+                const index = this.#users.findIndex(u => u.username === user.username);
 
                 // Si el usuario no existe en el sistema, lanzar una excepción
                 if (index === -1) {
@@ -210,7 +210,7 @@ export const VideoSystem = (function () {
                 // Eliminar el usuario del array de usuarios
                 this.#users.splice(index, 1);
 
-                return this;
+                return this.#users;
             }
 
             addUser(user) {
@@ -221,8 +221,13 @@ export const VideoSystem = (function () {
 
                 // Comprueba si el username ya existe
                 if (this.#users.some(u => u.username === user.username)) {
+                    console.log(this.#users);
                     throw new Error("El username ya existe");
                 }
+                    
+
+                
+
 
                 // Comprueba si el email ya existe
                 if (this.#users.some(u => u.email === user.email)) {
@@ -377,7 +382,7 @@ export const VideoSystem = (function () {
             #actorPos(actorID) {
                 for (let i = 0; i < this.#actors.length; i++) {
                     let obj = this.#actors[i].actor;
-                    if (obj.actor.ID === actorID) {
+                    if (obj.ID === actorID) {
                         return i; // devolvemos la posicion del actor 
                     }
                 }
