@@ -127,7 +127,7 @@ export const VideoSystem = (function () {
                 if (position === -1) {
                     category = new Category(name, description);
                     return category;
-                }else {
+                } else {
                     category = this.#categories[position].category;
 
                 }
@@ -224,9 +224,9 @@ export const VideoSystem = (function () {
                     console.log(this.#users);
                     throw new Error("El username ya existe");
                 }
-                    
 
-                
+
+
 
 
                 // Comprueba si el email ya existe
@@ -292,7 +292,7 @@ export const VideoSystem = (function () {
 
 
             // Devuelve un iterador que permite recuperar las producciones de una categoría
-            *getProductionsCategory(category) {
+            *getProductionCategory(category) {
                 // Comprobamos que la categoría es una instancia de Category
                 if (!(category instanceof Category) || category == null) {
                     throw new Error("Invalid category object.");
@@ -315,9 +315,10 @@ export const VideoSystem = (function () {
             // Elimina una producción de una categoría
             deassignCategory(category, ...productions) {
                 if (!(category instanceof Category))
-                    throw new TypeError("category must be an instance of Category");
-                if (!productions.every(production => production instanceof Production) || productions.length == 0)
-                    throw new TypeError("productions must be an array of Production instances and cannot be empty");
+                    throw new TypeError("la categoría debe ser una instancia de Category");
+
+                if (!productions.every(production => production instanceof Production) || productions.length === 0)
+                    throw new TypeError("las producciones deben ser un array de instancias de Production y no puede estar vacío");
 
                 // Obtenemos la posición de la categoría en array de  categorías
                 let posCategory = this.getCategoryPosition(category.name);
@@ -361,7 +362,7 @@ export const VideoSystem = (function () {
                 }
 
                 // Si El actor ya existe.
-                if (this.#actorPos(actor.ID) != -1) {
+                if (this.#actorPos(actor.ID) !== -1) {
                     throw new Error("Controlado: ¡El actor ya existe!");
                 }
 
@@ -392,7 +393,7 @@ export const VideoSystem = (function () {
             removeActor(actor) {
 
                 //El actor no puede ser null o no es un objeto Person.
-                if (actor instanceof Person || !actor) {
+                if (!actor instanceof Person || !actor) {
                     throw new Error("Controlado: El actor debe ser una instacia de la clase Person");
                 }
 
@@ -413,7 +414,7 @@ export const VideoSystem = (function () {
                 const directors = this.#directors;
                 function* generator() {
                     for (let i = 0; i < directors.length; i++) {
-                        yield directors[i]; // 
+                        yield directors[i].director; // 
                     }
                 }
                 return generator();
@@ -422,16 +423,6 @@ export const VideoSystem = (function () {
 
 
 
-            // metodo privado
-            #findDirectorPos(directorID) {
-                let pos = -1;
-                for (let i = 0; i < this.#directors.length; i++) {
-                    if (obj.director.ID === directorID) {
-                        pos = i;
-                    }
-                }
-                return pos;
-            }
 
             addDirector(director) {
                 // El director no puede ser null o no es un objeto Person.
@@ -440,21 +431,19 @@ export const VideoSystem = (function () {
                 }
 
                 // Comprobar que el director no existe ya en el sistema
-                if (this.#directors.find((d) => d.title === director.title)) {
+                if (this.#findDirectorPos(director.ID) !== -1) {
                     throw new Error("El director " + director.name + " ya existe en el sistema");
                 }
 
-                //
-                this.#directors.push(
-                    {
-                        director: director,
-                        productions: [],
-
-                    }
-                );
+                // Agregar el nuevo director al sistema
+                this.#directors.push({
+                    director: director,
+                    productions: []
+                });
 
                 return this.#directors.length;
             }
+
 
             removeDirector(director) {
                 // El director no puede ser null o no es un objeto Person.
@@ -466,7 +455,7 @@ export const VideoSystem = (function () {
 
                 //  El director no existe en el sistema
                 if (index === -1) {
-                    throw new Error("El director " + director.name + " ya existe en el sistema");
+                    throw new Error("El director " + director.name + " NO existe en el sistema");
                 }
 
                 this.#directors.splice(index, 1);
@@ -479,15 +468,17 @@ export const VideoSystem = (function () {
 
             //Asigna uno más producciones a unacategoría
             assignCategory(category, ...productions) {
-                // Se verifica si se ha especificado una categoría y al menos una producción
-                if (!category || !productions.length) {
-                    throw new Error("Se deben especificar una categoría y al menos una producción");
-                }
+                if (!(category instanceof Category))
+                    throw new TypeError("la categoría debe ser una instancia de Category");
+
+                if (!productions.every(production => production instanceof Production) || productions.length === 0)
+                    throw new TypeError("las producciones deben ser  de instancias de Production y no puede estar en vacío o null");
+
 
                 // Se obtiene la posición de la categoría en el array de categorías
                 let posCat = this.#categories.findIndex(cat => cat.category.name === category.name);
 
-               
+
 
 
                 // Si la categoría no existe se crea
@@ -501,46 +492,51 @@ export const VideoSystem = (function () {
                 productions.forEach(production => {
                     const existingProd = this.#productions.find(prod => prod.title === production.title);
                     if (!existingProd) {
-                        // Verificamos si la producción ya existe en la categoría
-                        const prodExistsInCategory = this.#categories[posCat].productions.some(prodCa => prodCa.title === production.title);
-                        if (!prodExistsInCategory) {
-                            this.#categories[posCat].productions.push(production);
-                        }
                         this.#productions.push(production);
+                    }
+                    // Verificamos si la producción ya existe en la categoría
+                    let prodExistsInCategory = this.#categories[posCat].productions.some(prodCa => prodCa.title === production.title);
+                    if (!prodExistsInCategory) {
+                        this.#categories[posCat].productions.push(production);
                     }
                 });
 
 
                 return this.#categories[posCat].productions.length;
             }
-            // Función que asigna una o varias producciones a un director.
-            // Si el director o la producción no existen, se añaden al sistema.
-            // Parámetros:
-            // - director: objeto de tipo Person que representa al director a asignar.
-            // - productions: uno o varios objetos de tipo Production que se asignarán al director.
-            // Devuelve:
-            // - El número total de producciones asignadas al director.
+
             assignDirector(director, ...productions) {
 
-                // Se verifica si se ha especificado un director y al menos una producción
+                // Verificamos si se ha especificado un director y al menos una producción
                 if (!director || !productions.length) {
                     throw new Error("Se debe especificar un director y al menos una producción");
                 }
 
-                // Se obtiene la posición del director en el array de directores
-                let posDirector = this.#directors.findIndex(dir => dir.name === director.name);
+                if (!director) {
+                    throw new Error("Se debe especificar un director");
+                }
+
+
+                // Verificamos que ninguna producción sea null
+                if (productions.some(prod => !prod)) {
+                    throw new Error("No se permiten producciones nulas");
+                }
+
+                // Obtenemos la posición del director en el array de directores
+                let posDirector = this.#directors.findIndex(obj => obj.director.ID === director.ID);
 
                 // Si el director no existe se crea
                 if (posDirector === -1) {
                     this.addDirector(director);
-                    posDirector = this.#directors.length - 1; // actualizamos la posición del director añadido
+                    posDirector = this.#directors.findIndex(obj => obj.director.ID === director.ID); // actualizamos la posición del director añadido
                 }
 
+                // Recorremos las producciones y se les asigna el director si no existen en el sistema
+                for (let production of productions) {
 
-                // Se recorren las producciones y se les asigna el director si no existen aún en el sistema
-                productions.forEach(production => {
-                    const existingProd = this.#productions.find(prod => prod.title === production.title);
-                    if (!existingProd) {
+                    // Verificamos si la producción ya existe en el sistema
+                    const existingProd = this.#productions.findIndex(prod => prod.title === production.title);
+                    if (existingProd === -1) {
                         // Si la producción no existe aún en el sistema, se asigna el director especificado
                         const dirExistsInProduction = production.director && production.director.name === director.name;
                         if (!dirExistsInProduction) {
@@ -548,16 +544,20 @@ export const VideoSystem = (function () {
                         }
                         // Se añade la producción al sistema
                         this.#productions.push(production);
-                        // Se agrega la producción al array de producciones a añadir al director
-                        prodToAdd.push(production);
                     }
-                });
 
+                    // Verificamos si la producción ya existe en el director
+                    const prodExistsInDirector = this.#directors[posDirector].productions.some(prodDir => prodDir.title === production.title);
+                    if (!prodExistsInDirector) {
+                        this.#directors[posDirector].productions.push(production);
+                    }
+                }
 
-
-                // Se devuelve el número total de producciones asignadas al director
                 return this.#directors[posDirector].productions.length;
             }
+
+
+
             /**
              * Desasigna una o más producciones de un actor.
              * @param {Person} person - El objeto de la clase `Person` que representa al actor.
@@ -578,7 +578,7 @@ export const VideoSystem = (function () {
                 }
 
                 // Obtenemos la posición del director en el array de directores
-                const directorIndex = this.#directors.findIndex(dir => dir.name === director.name);
+                const directorIndex = this.#directors.findIndex(obj => obj.director.ID === director.ID);
                 if (directorIndex === -1) {
                     throw new Error("El director no existe.");
                 }
@@ -593,53 +593,51 @@ export const VideoSystem = (function () {
                 return this.#directors[directorIndex].productions.length;
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            // Asigna uno o más producciones a un actor
             assignActor(actor, ...productions) {
                 // Verificamos si se ha especificado un actor y al menos una producción
                 if (!actor || !productions.length) {
                     throw new Error("Se deben especificar un actor y al menos una producción");
                 }
 
+
+
+                //this.#actors.forEach(obj => console.log(obj.actor.ID));
+
                 // Obtenemos la posición del actor en el array de actores
-                let posActor = this.#actors.findIndex(act => act.name === actor.name);
+                let posActor = this.#actors.findIndex(obj => obj.actor.ID === actor.ID);
+
 
                 // Si el actor no existe se crea
                 if (posActor === -1) {
                     this.addActor(actor);
-                    posActor = this.#actors.length - 1; // actualizamos la posición del actor añadido
+                    posActor = this.#actors.findIndex(obj => obj.actor.ID === actor.ID); // actualizamos la posición del actor añadido
+
                 }
 
+
                 // Recorremos las producciones y se les asigna el actor si no existen en el sistema
-                productions.forEach(production => {
-                    const existingProd = this.#productions.find(prod => prod.title === production.title);
-                    if (!existingProd) {
-                        // Verificamos si la producción ya existe en el actor
-                        const prodExistsInActor = this.#actors[posActor].productions.some(prodAc => prodAc.title === production.title);
-                        if (!prodExistsInActor) {
-                            this.#actors[posActor].productions.push(production);
-                        }
+                for (let production of productions) {
+
+                    // Verificamos si la producción ya existe en el sistema
+                    const existingProd = this.#productions.findIndex(prod => prod.title === production.title);
+                    //console.log(existingProd)
+                    if (existingProd == -1) {
                         this.#productions.push(production);
                     }
-                });
 
-                return this.#categories[posActor].productions.length;
+                    // Verificamos si la producción ya existe en el actor
+                    const prodExistsInActor = this.#actors[posActor].productions.some(prodAc => prodAc.title === production.title);
+                    if (!prodExistsInActor) {
+                        this.#actors[posActor].productions.push(production);
+                    }
+                }
+
+                return this.#actors[posActor].productions.length; // Corregido, se devuele el array de producciones del actor en la posición correspondiente
             }
 
-            deassignActor(actor, productions) {
+
+
+            deassignActor(actor, ...productions) {
                 if (!(actor instanceof Person)) {
                     throw new TypeError("El actor debe ser un objeto válido de la clase `Person`.");
                 }
@@ -649,7 +647,7 @@ export const VideoSystem = (function () {
                 }
 
                 // Obtenemos la posición del actor en el array de actores
-                const index = this.#actors.findIndex(act => act.name === actor.name);
+                const index = this.#actors.findIndex(obj => obj.actor.ID === actor.ID);
                 if (index === -1) {
                     throw new Error("El actor no existe.");
                 }
@@ -657,7 +655,7 @@ export const VideoSystem = (function () {
                 // Filtramos las producciones que no deben ser eliminadas del actor
                 const remainingProductions = this.#actors[index].productions.filter(production => !productions.includes(production));
 
-                // Actualizamos las producciones del director con las producciones restantes
+                // Actualizamos las producciones del actor  con las producciones restantes
                 this.#actors[index].productions = remainingProductions;
 
                 // Retornamos el número total de producciones asignadas al actor
@@ -671,9 +669,16 @@ export const VideoSystem = (function () {
              * @returns {Iterator} - Un iterador que contiene los actores que han actuado en la producción.
              */
             *getCast(production) {
-                // Verificamos que el parámetro recibido sea una instancia de la clase Production
-                if (!(production instanceof Production))
+                // Verificamos si el parámetro recibido es null
+                if (production === null) {
+
                     throw new Error("Se debe especificar una producción");
+                }
+
+                if (!(production instanceof Production)) {
+                    throw new Error("La producción debe ser una instancia de la clase `Production`");
+                }
+
 
                 // Filtramos los actores que hayan participado en la producción que se está buscando
                 const actorsInProduction = this.#actors.filter(actor => actor.productions.some(p => p.title === production.title));
@@ -684,30 +689,28 @@ export const VideoSystem = (function () {
                 }
             }
 
-            *getProductionsDirector(director) {
-                if (!(director instanceof Director))
-                    throw new Error("Se debe especificar un");
-
-                // Filtramos las producciones por el nombre del director
-                let productions = this.#productions.filter(
-                    (production) => production.director.name === director.name
-                );
-
-                // Devolvemos las producciones encontradas como iterador
-                for (let production of productions) {
-                    yield production;
+            // metodo privado
+            #findDirectorPos(directorID) {
+                let pos = -1;
+                for (let i = 0; i < this.#directors.length; i++) {
+                    if (this.#directors[i].director.ID === directorID) {
+                        pos = i;
+                        break; // opcional, para terminar el bucle si ya se encontró el director
+                    }
                 }
+                return pos;
             }
+
 
             /**
              * Obtiene un iterador con las producciones de un director.
              * @param {Person} director - El director cuyas producciones se van a obtener.
              * @returns {Iterator} - Un iterador que genera las producciones del director.
              */
-            *getProductionDirector(director) {
+            *getProductionsDirector(director) {
                 // Verificamos que el parámetro director sea una instancia de la clase Person.
                 if (!(director instanceof Person)) {
-                    throw new InvalidValueException("director", "Person");
+                    throw new Error("El parámetro actor debe ser una instancia de Person.");
                 }
 
                 // Obtenemos el índice del director en el array de directores.
@@ -719,12 +722,26 @@ export const VideoSystem = (function () {
                 }
             }
 
+            #findActorPos(actorID) {
+
+                for (let i = 0; i < this.#actors.length; i++) {
+                    if (this.#actors[i].actor.ID === actorID) {
+                        return i;
+
+                    }
+                }
+                return -1;
+            }
+
+
+
+
             /**
- * Obtiene un iterador con las producciones de un actor.
- * @param {Person} actor - Actor cuyas producciones se desean obtener.
- * @returns {Generator} Generador con las producciones del actor.
- * @throws {TypeError} Si el parámetro actor no es una instancia de Person.
- */
+             * Obtiene un iterador con las producciones de un actor.
+             * @param {Person} actor - Actor cuyas producciones se desean obtener.
+             * @returns {Generator} Generador con las producciones del actor.
+             * @throws {TypeError} Si el parámetro actor no es una instancia de Person.
+             */
             *getProductionsActor(actor) {
                 // Se valida que el parámetro actor sea una instancia de Person
                 if (!(actor instanceof Person)) {
@@ -732,10 +749,10 @@ export const VideoSystem = (function () {
                 }
 
                 // Se obtiene el índice del actor en el array de actores
-                const actorIndex = this.#actors.findIndex(act => act.ID === actor.ID);
-
+                const actorIndex = this.#findActorPos(actor.ID);
+                //console.log(this.#actors[actorIndex].productions)
                 // Se recorre el array de producciones del actor y se retorna un generador con ellas
-                for (const production of this.#actors[actorIndex].productions) {
+                for (let production of this.#actors[actorIndex].productions) {
                     yield production;
                 }
             }
@@ -754,12 +771,12 @@ export const VideoSystem = (function () {
                     throw new Error("La categoría proporcionada no es válida");
 
                 // Obtenemos el array de producciones de la categoría
-                let productionsArray = this.#categories[this.#FinCategoryPos(category.name)]?.productions;
+                let productionsArray = this.#categories[this.#FinCategoryPos(category.name)].productions;
 
                 // Si la categoría no existe, lanzamos una excepción
-                if (!productionsArray)
-                    throw new NotFoundException(`Categoría '${category.name}' no encontrada.`);
-
+                if (!productionsArray) {
+                    throw new Error(`Categoría '${category.name}' no encontrada.`);
+                }
                 // Retornamos un generador que produce las producciones de la categoría
                 for (let production of productionsArray) {
                     yield production;
@@ -771,7 +788,7 @@ export const VideoSystem = (function () {
              */
             #FinCategoryPos(categoryName) {
                 for (let i = 0; i < this.#categories.length; i++) {
-                    if (this.#categories[i].name === categoryName) {
+                    if (this.#categories[i].category.name === categoryName) {
                         return i;
                     }
                 }
@@ -782,10 +799,14 @@ export const VideoSystem = (function () {
 
             // Devuelve un objeto iterador que permite recorrer los actores registrados en el sistema
             get actors() {
+
+                // fuera de la funcion por el (this)
+                let objs = this.#actors;
+
                 // Definimos una función generadora que itera sobre el array de actores
                 function* actorGenerator() {
-                    for (const actor of this.#actors) {
-                        yield actor;
+                    for (const obj of objs) {
+                        yield obj.actor;
                     }
                 }
                 // Devolvemos el objeto iterador generado por la función

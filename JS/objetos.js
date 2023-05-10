@@ -12,8 +12,8 @@ export class Person {
     constructor(name, lastName1, born, lastName2, picture, ID) {
         this.#name = name;
         this.#lastName1 = lastName1;
-        this.#lastName2 = lastName2;
         this.#born = born;
+        this.#lastName2 = lastName2;
         this.#picture = picture;
         this.#ID = ID;
     }

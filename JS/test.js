@@ -219,7 +219,7 @@ log("================================");
 
 
 log("================================");
-log("PRUEBAS DE  PERSON");
+log("PRUEBAS DE ACTOR  (PERSON)");
 
 
 // creamos los objetos actores de clase Person
@@ -234,20 +234,365 @@ log("Número de actores existentes en el sistema: " + videos.addActor(actor2));
 log("Número de actores existentes en el sistema: " + videos.addActor(actor3));
 
 // Eliminamos un actor del sistema
-removeActor(actor2);
+videos.removeActor(actor2);
+log("Eliminamos el actor con ID (" + actor2.ID + ") del sistema");
 
 // Mostramos la información de los actores restantes en el sistema
-console.log("Actores restantes en el sistema:");
-const actorGenerator = videos.Actors(); // Obtenemos el generador de actores
+log("Actores restantes en el sistema:");
+const actorGenerator = videos.actors; // Obtenemos el generador de actores
 
 // Iteramos sobre el generador y mostramos la información de cada actor
 for (const actor of actorGenerator) {
-    console.log(`ID: ${actor.getID()}, Nombre: ${actor.getName()}, Apellidos: ${actor.getLastName()}, Fecha de nacimiento: ${actor.getBorn()}, Foto: ${actor.getPicture()}`);
+    log(`ID: ${actor.ID}, Nombre: ${actor.name}, Apellidos: ${actor.LastName}, Fecha de nacimiento: ${actor.born}, Foto: ${actor.Picture}`);
 }
 
+// el actor no puede ser null o no es un objeto Person.
+log("caso: el actor no puede ser null o no es un objeto Person.")
+try {
+    videos.addActor(null);
+} catch (error) {
+    console.error(error.message);
+}
+
+// el actor ya existe.
+videos.addActor(actor2);
+log(" caso: el actor ya existe.")
+try {
+    videos.addActor(actor2);
+} catch (error) {
+    console.error(error.message);
+}
 
 
 
 log("FINALIZANDO LAS PRUEBAS DE ACTOR (PERSON)");
 log("================================");
 
+
+
+console.log("================================");
+console.log("PRUEBAS DE DIRECTOR");
+
+// Creamos los objetos de clase Director
+const director1 = new Person("Juan", "Gómez", new Date(1975, 2, 17), "López", "juan_gomez.jpg", "D001");
+const director2 = new Person("María", "Pérez", new Date(1980, 8, 5), "García", "maria_perez.jpg", "D002");
+const director3 = new Person("Pedro", "Fernández", new Date(1970, 4, 30), "Martínez", "pedro_fernandez.jpg", "D003");
+
+// Añadimos los directores al sistema y mostramos el número total después de cada adición
+console.log("Número de directores existentes en el sistema: " + videos.addDirector(director1));
+console.log("Número de directores existentes en el sistema: " + videos.addDirector(director2));
+console.log("Número de directores existentes en el sistema: " + videos.addDirector(director3));
+
+// Eliminamos un director del sistema
+videos.removeDirector(director2);
+console.log("Eliminamos el director con ID (" + director2.ID + ") del sistema");
+
+// Mostramos la información de los directores restantes en el sistema
+console.log("Directores restantes en el sistema:");
+const directorGenerator = videos.directors; // Obtenemos el generador de directores
+
+// Iteramos sobre el generador y mostramos la información de cada director
+for (const director of directorGenerator) {
+    console.log(`ID: ${director.ID}, Nombre: ${director.name}, Apellidos: ${director.LastName}, Fecha de nacimiento: ${director.born}, Foto: ${director.picture}`);
+
+
+}
+
+// Caso: el director no puede ser null o no es un objeto Person.
+console.log("Caso: el director no puede ser null o no es un objeto Person.");
+try {
+    videos.addDirector(null);
+} catch (error) {
+    console.error(error.message);
+}
+
+// Caso: el director ya existe.
+videos.addDirector(director2);
+console.log("Caso: el director ya existe.");
+try {
+    videos.addDirector(director2);
+} catch (error) {
+    console.error(error.message);
+}
+
+// remove
+log("Pruebas del metodo remove ");
+
+// Caso: el director no puede ser null o no es un objeto Person.
+console.log("Caso: el director no puede ser null o no es un objeto Person.");
+try {
+    videos.removeDirector(null);
+} catch (error) {
+    console.error(error.message);
+}
+
+// Caso: el director no existe en el sistema.
+console.log("Caso: el director no existe en el sistema.");
+const director4 = new Person("Luisa", "Sánchez", new Date(1978, 1, 18), "García", "luisa_sanchez.jpg", "D008");
+videos.addActor(director4);
+videos.removeActor(director4);
+try {
+    videos.removeDirector(director4);
+} catch (error) {
+    console.error(error.message);
+}
+
+
+console.log("FINALIZANDO LAS PRUEBAS DE DIRECTOR");
+console.log("================================");
+
+
+
+
+
+console.log("================================");
+console.log("PRUEBAS DE ASIGNACIÓN DE CATEGORÍAS");
+
+// categria de miedo 
+let categoriaMiedo = videos.getCategory("Miedo", "Películas y series de terror y suspenso.");
+
+// Crear algunas producciones de miedo
+let theRing = new Movie("The Ring", new Date(2002, 9, 18), "Una cinta de vídeo que mata a quien la ve en siete días.", "the-ring.jpg", "Estados Unidos", new Resource(115, "www.netflix.com/the-ring"), [new Coordinate(34.0522, -118.2437)]);
+let theExorcist = new Movie("The Exorcist", new Date(1973, 12, 26), "Una niña es poseída por un demonio y dos sacerdotes intentan expulsarlo.", "the-exorcist.jpg", "Estados Unidos", new Resource(122, "www.netflix.com/the-exorcist"), [new Coordinate(38.9072, -77.0369)]);
+let theShining = new Movie("The Shining", new Date(1980, 5, 23), "Una familia se hospeda en un hotel aislado durante el invierno y comienzan a suceder cosas extrañas.", "the-shining.jpg", "Estados Unidos", new Resource(144, "www.netflix.com/the-shining"), [new Coordinate(39.7392, -104.9903)]);
+let theHauntingOfHillHouse = new Serie("The Haunting of Hill House", new Date(2018, 10, 12), "Una familia se muda a una casa encantada y comienzan a suceder cosas extrañas.", "the-haunting-of-hill-house.jpg", "Estados Unidos", [new Resource(60, "www.netflix.com/the-haunting-of-hill-house1"), new Resource(60, "www.netflix.com/the-haunting-of-hill-house2"), new Resource(60, "www.netflix.com/the-haunting-of-hill-house3")], [new Coordinate(34.0522, -118.2437)], "T1");
+let americanHorrorStory = new Serie("American Horror Story", new Date(2011, 10, 5), "Cada temporada cuenta una historia diferente de horror, desde un asilo embrujado hasta un circo de fenómenos.", "american-horror-story.jpg", "Estados Unidos", [new Resource(60, "www.netflix.com/american-horror-story1"), new Resource(60, "www.netflix.com/american-horror-story2"), new Resource(60, "www.netflix.com/american-horror-story3")], [new Coordinate(34.0522, -118.2437)], "T1, T2, T3");
+
+// Crea la categoría "Miedo" si no existe y asigna las producciones a la categoría
+try {
+    let numProduccionesAsignadas = videos.assignCategory(categoriaMiedo, theRing, theExorcist, theShining, theHauntingOfHillHouse, americanHorrorStory);
+    console.log(`Se han asignado ${numProduccionesAsignadas} producciones a la categoría ${categoriaMiedo.name}:`);
+} catch (error) {
+    console.log(error);
+}
+
+
+
+// Category es null
+log("caso: Category es null");
+try {
+    videos.assignCategory(null, new Movie("The Ring II", new Date(2002, 9, 18), "Una cinta de vídeo que mata a quien la ve en siete días.", "the-ring.jpg", "Estados Unidos", new Resource(115, "www.netflix.com/the-ring"), [new Coordinate(34.0522, -118.2437)]));
+} catch (error) {
+    console.error(error.message);
+}
+
+//  Production es null
+log("Caso: Production es null");
+try {
+    videos.assignCategory(videos.getCategory("Miedo"), null, []);
+} catch (error) {
+    console.error(error.message);
+}
+
+// ver si se han añadido correctamente las producciones nuevas 
+log("Verificamos si se han añadido correctamente las producciones nuevas. \nproducciones:");
+for (let produccion of videos.productions) {
+    console.log("Title: " + produccion.title);
+}
+
+
+// Eliminamos las producciones  "theRing" y theShining de la categoría "Miedo".
+log('Eliminamos la producción "theRing" de la categoría "Miedo"');
+let numProduccionesAsignadas = videos.deassignCategory(categoriaMiedo, theRing, theShining);
+log(`Se han eliminado las producciones "${theRing.title}" y "${theShining.title}"  de la categoría ${categoriaMiedo.name}, quedan ${numProduccionesAsignadas} producciones asignadas.`);
+
+
+// Mostrar las producciones de la categoría "Miedo" antes de ser eliminada
+console.log("\nProducciones de la categoría 'Miedo' antes de ser eliminada:");
+for (let production of videos.getProductionCategory(categoriaMiedo)) {
+    console.log(production.title);
+}
+
+
+// Eliminamos la categoría "categoriaMiedo"
+log('Eliminamos la categoría "categoriaMiedo"')
+log("Quedan " + videos.removeCategory(categoriaMiedo) + " categorias");
+
+// Comprobamos que las producciones de la categoría eliminada se hayan asignado a la categoría por defecto
+log("Comprobamos que las producciones de la categoría eliminada se hayan asignado a la categoría por defecto\nProducciones en la categoría por defecto:");
+let defecto = videos.getCategory("default");
+for (let production of videos.getProductionCategory(defecto)) {
+    console.log("Title: "+production.title);
+}
+
+
+
+
+
+
+console.log("FINALIZANDO LAS PRUEBAS DE ASIGNACIÓN DE CATEGORÍAS");
+console.log("================================\n");
+
+console.log("================================");
+console.log("PRUEBAS DE ASIGNACIÓN DE PRODUCCIONES A ACTORES");
+
+// actores
+const actorJuan = new Person("Juan", "Martínez", new Date(1980, 5, 15), "García", "img/juanmartinez.jpg", "alpha1");
+const actrizMaria = new Person("María", "Sánchez", new Date(1985, 7, 3), "Pérez", "img/mariasanchez.jpg", "beta2");
+const actorCarlos = new Person("Carlos", "Fernández", new Date(1970, 9, 11), "González", "img/carlosfernandez.jpg", "gamma3");
+
+// añdimos los actores 
+videos.addActor(actorJuan);
+videos.addActor(actrizMaria);
+videos.addActor(actorCarlos);
+
+// mostrar los actores existentes en el sistema
+console.log("ACTORES EXISTENTES EN EL SISTEMA:");
+for (let actor of videos.actors) {
+    console.log(`${actor.name} ${actor.lastName1} ${actor.lastName2}`);
+}
+
+// Asignamos producciones al actor Juan
+log("Asignamos las  producciones 'theRing' y theHauntingOfHillHouse' al actor Juan");
+log(videos.assignActor(actorJuan, theRing, theHauntingOfHillHouse));
+
+
+log(`Producciones asignadas al actor Juan:`);
+let prodsJ = videos.getProductionsActor(actorJuan);
+for (let produccion of prodsJ) {
+    log("title: " + produccion.title);
+}
+
+
+let laCasaDePapel = new Serie("La Casa de Papel", new Date(2017, 11, 20), "Un grupo de ladrones planea el mayor atraco de la historia en la Fábrica Nacional de Moneda y Timbre.", "la-casa-de-papel.jpg", "España", [new Resource(50, "www.netflix.com/la-casa-de-papel1"), new Resource(50, "www.netflix.com/la-casa-de-papel2")], [new Coordinate(40.4168, -3.7038)], "T1, T2, T3, T4");
+
+let narcos = new Serie("Narcos", new Date(2015, 8, 28), "La historia de los carteles colombianos y su relación con los Estados Unidos y la DEA.", "narcos.jpg", "Estados Unidos", [new Resource(50, "www.netflix.com/narcos1"), new Resource(50, "www.netflix.com/narcos2")], [new Coordinate(6.2442, -75.5812)], "T1, T2, T3");
+
+
+// Prueba cuando el objeto Person es null
+log("Caso: el objeto Person es null")
+try {
+    videos.assignActor(null, laCasaDePapel, narcos);
+} catch (error) {
+    console.error(error.message);
+}
+
+// Prueba cuando el objeto Production es null
+log("Caso: el objeto Production es null")
+try {
+    videos.assignActor(juan, null);
+} catch (error) {
+    console.error(error.message);
+}
+
+
+// Desasignamos una o dos producciones del actor Juan
+log("Desasignamos la producción 'theRing' del actor Juan");
+log(videos.deassignActor(actorJuan, theRing));
+
+// Mostramos las producciones que quedan asignadas al actor Juan
+log(`Mostramos las producciones que quedan asignadas al actor Juan:`);
+prodsJ = videos.getProductionsActor(actorJuan);
+if (prodsJ.length === 0) {
+    log("El actor Juan no tiene ninguna producción asignada.");
+} else {
+    for (let produccion of prodsJ) {
+        log("title: " + produccion.title);
+    }
+}
+
+
+
+
+
+// Obtener el reparto de una producción
+log("Obtener el reparto de una producción")
+
+console.log(`Reparto de actores en la producción '${movie1.title}':`);
+videos.assignActor(actor1, movie1);
+videos.assignActor(actor2, movie1);
+const cast = videos.getCast(movie1);
+
+for (const actor of cast) {
+    log(`- ${actor.name}`);
+}
+
+
+// Caso donde la producción es null
+log("Caso: la producción es null")
+try {
+    const cast3 = videos.getCast(null);
+    videos.assignActor(actorJuan, movie3);
+    videos.assignActor(actorCarlos, movie3);
+    for (const actor of cast3) {
+        log(`- ${actor.name}`);
+    }
+
+} catch (e) {
+    console.error(e.message);
+}
+
+console.log("================================");
+console.log("FINALIZANDO LAS PRUEBAS DE ASIGNACIÓN DE PRODUCCIONES A ACTORES");
+
+console.log("================================");
+console.log("PRUEBAS DE ASIGNACIÓN DE PRODUCCIONES A DIRECTORES");
+
+// directores
+const directorPedro = new Person("Pedro", "Almodóvar", new Date(1949, 8, 25), "Caballero", "img/pedroalmodovar.jpg", "delta4");
+const directoraSofia = new Person("Sofía", "Coppola", new Date(1971, 4, 14), "Coppola", "img/sofiacoppola.jpg", "epsilon5");
+const directorDavid = new Person("David", "Fincher", new Date(1962, 8, 28), "Fincher", "img/davidfincher.jpg", "zeta6");
+
+// añadimos los directores
+videos.addDirector(directorPedro);
+videos.addDirector(directoraSofia);
+videos.addDirector(directorDavid);
+
+// mostrar los directores existentes en el sistema
+console.log("DIRECTORES EXISTENTES EN EL SISTEMA:");
+for (let director of videos.directors) {
+    console.log(`${director.name} ${director.lastName1} ${director.lastName2}`);
+}
+
+// Asignamos producciones al director Pedro Almodóvar
+log("Asignamos las producciones 'Todo sobre mi madre' y 'Hable con ella' al director Pedro Almodóvar");
+log(videos.assignDirector(directorPedro, movie1, movie2));
+
+
+log(`Producciones asignadas al director Pedro Almodóvar:`);
+let prodsP = videos.getProductionsDirector(directorPedro);
+for (let produccion of prodsP) {
+    log("title: " + produccion.title);
+}
+
+
+
+// Prueba cuando el objeto Person es null
+log("Caso: el objeto Person es null")
+try {
+    videos.assignDirector(null, laCasaDePapel, narcos);
+} catch (error) {
+    console.error(error.message);
+}
+
+// Prueba cuando el objeto Production es null
+log("Caso: el objeto Production es null")
+try {
+    videos.assignDirector(directorPedro, null);
+} catch (error) {
+    console.error(error.message);
+}
+
+// Desasignamos una o dos producciones del director Pedro Almodóvar
+let todoSobreMiMadre = new Movie("Todo sobre mi madre", new Date(1999, 8, 16), "Una madre busca al padre de su hijo transexual después de que éste muera en un accidente.", "todo-sobre-mi-madre.jpg", "España", [new Resource(50, "www.netflix.com/todo-sobre-mi-madre1"), new Resource(50, "www.netflix.com/todo-sobre-mi-madre2")], [new Coordinate(40.4168, -3.7038)], 100);
+let volver = new Movie("Volver", new Date(2006, 9, 26), "Tras la muerte de su tía, Raimunda encuentra un misterioso fantasma que la ayudará a resolver algunos problemas familiares.", "volver.jpg", "España", [new Resource(50, "www.netflix.com/volver1"), new Resource(50, "www.netflix.com/volver2")], [new Coordinate(40.4168, -3.7038)], 120);
+let hableConElla = new Movie("Hable con ella", new Date(2002, 3, 14), "Dos hombres entablan una inusual amistad mientras cuidan a dos mujeres en coma.", "hable-con-ella.jpg", "España", [new Resource(50, "www.netflix.com/hable-con-ella1"), new Resource(50, "www.netflix.com/hable-con-ella2")], [new Coordinate(40.4168, -3.7038)], 112);
+
+log(videos.assignDirector(directorPedro, todoSobreMiMadre, volver, hableConElla));
+
+
+
+
+log("Desasignamos las producciones 'Hable con ella' y 'Volver' del director Pedro Almodóvar");
+log(videos.deassignDirector(directorPedro, hableConElla, volver));
+
+// Mostramos las producciones que quedan asignadas al director Pedro Almodóvar
+log(`Mostramos las producciones que quedan asignadas al director ${directorPedro.name} ${directorPedro.lastName1}:`);
+let prodsPedro = videos.getProductionsDirector(directorPedro);
+
+for (let produccion of prodsPedro) {
+    log("title: " + produccion.title);
+}
+
+console.log("================================");
+console.log("FINALIZANDO LAS PRUEBAS DE ASIGNACIÓN DE PRODUCCIONES A DIRECTORES");
