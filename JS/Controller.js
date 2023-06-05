@@ -89,42 +89,94 @@ class Controller {
         this.#videoSystemModel.assignCategory(this.#videoSystemModel.getCategory("Aventura"), seriesAdventure2);
 
 
-
-
-        // Do
+        // Documentales
 
         /**Documental: Apollo: Missions to the Moon */
         /**Director: Todd Douglas Miller */
-        this.#videoSystemModel.assignDirector(new Person("Todd", "Douglas", "Miller", new Date(1970, 0, 0), "img/Directors/ToddDouglasMiller.jpg"), new Movie("Apollo: Missions to the Moon", Category.Documentary));
+        this.#videoSystemModel.assignDirector(new Person("Todd", "Douglas", "Miller", new Date(1970, 0, 0), "./images/Directores/ToddMiller.png"), this.#videoSystemModel.getMovie("Apollo: Missions to the Moon"));
         /**Actores: Neil Armstrong, Buzz Aldrin, Michael Collins */
-        this.#videoSystemModel.assignActor(new Person("Neil", "", "Armstrong", new Date(1930, 7, 5), "img/Actors/NeilArmstrong.png"), new Movie("Apollo: Missions to the Moon", Category.Documentary));
-        this.#videoSystemModel.assignActor(new Person("Buzz", "", "Aldrin", new Date(1930, 0, 20), "img/Actors/BuzzAldrin.jpg"), new Movie("Apollo: Missions to the Moon", Category.Documentary));
-        this.#videoSystemModel.assignActor(new Person("Michael", "", "Collins", new Date(1930, 10, 31), "img/Actors/MichaelCollins.jpg"), new Movie("Apollo: Missions to the Moon", Category.Documentary));
+        this.#videoSystemModel.assignActor(new Person("Neil", "", "Armstrong", new Date(1930, 7, 5), "./images/Actores/NeilArmstrong.png"), this.#videoSystemModel.getMovie("Apollo: Missions to the Moon"));
+        this.#videoSystemModel.assignActor(new Person("Buzz", "", "Aldrin", new Date(1930, 0, 20), "./images/Actores/BuzzAldrin.png"), this.#videoSystemModel.getMovie("Apollo: Missions to the Moon"));
+        this.#videoSystemModel.assignActor(new Person("Michael", "", "Collins", new Date(1930, 10, 31), "./images/Actores/MichaelCollins.png"), this.#videoSystemModel.getMovie("Apollo: Missions to the Moon"));
 
         /**Documental: The Blue Planet */
         /**Director: Alastair Fothergill */
-        this.#videoSystemModel.assignDirector(new Person("Alastair", "", "Fothergill", new Date(1960, 0, 0), "img/Directors/AlastairFothergill.jpg"), new Movie("The Blue Planet", Category.Documentary));
+        this.#videoSystemModel.assignDirector(new Person("Alastair", "", "Fothergill", new Date(1960, 0, 0), "./images/Directores/AlastaiFothergill.png"), this.#videoSystemModel.getMovie("The Blue Planet"));
         /**Actores: David Attenborough, Pierce Brosnan, Michael Gambon */
-        this.#videoSystemModel.assignActor(new Person("David", "", "Attenborough", new Date(1926, 4, 8), "img/Actors/DavidAttenborough.jpg"), new Movie("The Blue Planet", Category.Documentary));
-        this.#videoSystemModel.assignActor(new Person("Pierce", "", "Brosnan", new Date(1953, 4, 16), "img/Actors/PierceBrosnan.jpg"), new Movie("The Blue Planet", Category.Documentary));
-        this.#videoSystemModel.assignActor(new Person("Michael", "", "Gambon", new Date(1940, 10, 19), "img/Actors/MichaelGambon.jpg"), new Movie("The Blue Planet", Category.Documentary));
+        this.#videoSystemModel.assignActor(new Person("David", "", "Attenborough", new Date(1926, 4, 8), "./images/Actores/DavidAttenborough.png"), this.#videoSystemModel.getMovie("The Blue Planet"));
+        this.#videoSystemModel.assignActor(new Person("Pierce", "", "Brosnan", new Date(1953, 4, 16), "./images/Actores/PierceBrosnan.png"), this.#videoSystemModel.getMovie("The Blue Planet"));
+        this.#videoSystemModel.assignActor(new Person("Michael", "", "Gambon", new Date(1940, 10, 19), "./images/Actores/MichaelGambon.png"), this.#videoSystemModel.getMovie("The Blue Planet"));
 
         /**Documental: Cosmos: A Spacetime Odyssey */
         /**Director: Brannon Braga */
-        this.#videoSystemModel.assignDirector(new Person("Brannon", "", "Braga", new Date(1965, 0, 0), "img/Directors/BrannonBraga.jpg"), new Movie("Cosmos: A Spacetime Odyssey", Category.Documentary));
+        this.#videoSystemModel.assignDirector(new Person("Brannon", "", "Braga", new Date(1965, 0, 0), "./images/Directores/BrannonBraga.png"), this.#videoSystemModel.getMovie("Cosmos: A Spacetime Odyssey"));
         /**Actores: Neil deGrasse Tyson, Stoney Emshwiller, Piotr Michael */
-        this.#videoSystemModel.assignActor(new Person("Neil", "deGrasse", "Tyson", new Date(1958, 9, 5), "img/Actors/NeildeGrasseTyson.jpg"), new Movie("Cosmos: A Spacetime Odyssey", Category.Documentary));
-        this.#videoSystemModel.assignActor(new Person("Stoney", "", "Emshwiller", new Date(1960, 0, 0), "img/Actors/StoneyEmshwiller.jpg"), new Movie("Cosmos: A Spacetime Odyssey", Category.Documentary));
-        
+        this.#videoSystemModel.assignActor(new Person("Neil", "deGrasse", "Tyson", new Date(1958, 9, 5), "./images/Actores/NeilTyson.png"), this.#videoSystemModel.getMovie("Cosmos: A Spacetime Odyssey"));
+        this.#videoSystemModel.assignActor(new Person("Stoney", " ", "Emshwiller", new Date(1960, 0, 0), "./images/Actores/StoneyEmshwiller.png"), this.#videoSystemModel.getMovie("Cosmos: A Spacetime Odyssey"));
+        this.#videoSystemModel.assignActor(new Person("Piotr", " ", "Michael", new Date(1980, 0, 0), "./images/Actores/PiotrMichael.png"), this.#videoSystemModel.getMovie("Cosmos: A Spacetime Odyssey"));
+
+        /**Documental: Life */
+        /**Director: Tom Shankland */
+        this.#videoSystemModel.assignDirector(
+            new Person("Tom", "", "Shankland", new Date(1972, 0, 0), "./images/Directores/TomShankland.png"),
+            this.#videoSystemModel.getMovie("Life")
+        );
+
+        /**Actores: David Attenborough, Oprah Winfrey, Doug Allen */
+        this.#videoSystemModel.assignActor(
+            new Person("David", "", "Attenborough", new Date(1926, 5, 8), "./images/Actores/DavidAttenborough.png"),
+            this.#videoSystemModel.getMovie("Life")
+        );
+        this.#videoSystemModel.assignActor(
+            new Person("Oprah", "", "Winfrey", new Date(1954, 0, 29), "./images/Actores/OprahWinfrey.png"),
+            this.#videoSystemModel.getMovie("Life")
+        );
+        this.#videoSystemModel.assignActor(
+            new Person("Doug", "", "Allen", new Date(1950, 0, 29), "./images/Actores/DougAllen.png"),
+            this.#videoSystemModel.getMovie("Life")
+        );
+
+        // Asignaciones para la película "Ace Ventura: Pet Detective"
+        this.#videoSystemModel.assignDirector(new Person("Tom", "", "Shadyac", new Date(1958, 12, 11), "./images/Directores/TomShadyac.png"), this.#videoSystemModel.getMovie("Ace Ventura: Pet Detective"));
+        this.#videoSystemModel.assignActor(new Person("Courteney", "", "Cox", new Date(1964, 5, 15), "./images/Actores/CourteneyCox.png"), this.#videoSystemModel.getMovie("Ace Ventura: Pet Detective"));
+        this.#videoSystemModel.assignActor(new Person("Sean", "", "Young", new Date(1959, 11, 20), "./images/Actores/SeanYoung.png"), this.#videoSystemModel.getMovie("Ace Ventura: Pet Detective"));
+        this.#videoSystemModel.assignActor(new Person("Tone", "", "Loc", new Date(1966, 3, 3), "./images/Actores/ToneLoc.png"), this.#videoSystemModel.getMovie("Ace Ventura: Pet Detective"));
+
+        // Asignaciones para la película "Dumb and Dumber"
+        this.#videoSystemModel.assignDirector(new Person("Peter", "", "Farrelly", new Date(1956, 12, 17), "./images/Directores/PeterFarrelly.png"), this.#videoSystemModel.getMovie("Ace Dumb and Dumber"));
+        this.#videoSystemModel.assignActor(new Person("Jim", "", "Carrey", new Date(1962, 0, 17), "./images/Actores/JimCarrey.png"), this.#videoSystemModel.getMovie("Ace Dumb and Dumber"));
+        this.#videoSystemModel.assignActor(new Person("Jeff", "", "Daniels", new Date(1955, 2, 19), "./images/Actores/JeffDaniels.png"), this.#videoSystemModel.getMovie("Ace Dumb and Dumber"));
+        this.#videoSystemModel.assignActor(new Person("Lauren", "", "Holly", new Date(1963, 9, 28), "./images/Actores/LaurenHolly.png"), this.#videoSystemModel.getMovie("Ace Dumb and Dumber"));
+
+        // Asignaciones para la serie "Friends"
+        this.#videoSystemModel.assignDirector(new Person("James", "", "Burrows", new Date(1940, 12, 30), "./images/Directores/JamesBurrows.png"), this.#videoSystemModel.getSerie("Friends"));
+        this.#videoSystemModel.assignActor(new Person("Jennifer", "", "Aniston", new Date(1969, 1, 11), "./images/Actores/JenniferAniston.png"), this.#videoSystemModel.getSerie("Friends"));
+        this.#videoSystemModel.assignActor(new Person("Courteney", "", "Cox", new Date(1964, 5, 15), "./images/Actores/CourteneyCox.png"), this.#videoSystemModel.getSerie("Friends"));
+        this.#videoSystemModel.assignActor(new Person("Lisa", "", "Kudrow", new Date(1963, 7, 30), "./images/Actores/LisaKudrow.png"), this.#videoSystemModel.getSerie("Friends"));
+
+        //The Office
+        this.#videoSystemModel.assignDirector(new Person("Greg", "", "Daniels", new Date(1963, 6, 13), "./images/Directores/GregDaniels.png"), this.#videoSystemModel.getSerie("The Office"));
+        this.#videoSystemModel.assignActor(new Person("Steve", "", "Carell", new Date(1962, 7, 16), "./images/Actores/SteveCarell.png"), this.#videoSystemModel.getSerie("The Office"));
+        this.#videoSystemModel.assignActor(new Person("Rainn", "", "Wilson", new Date(1966, 0, 20), "./images/Actores/RainnWilson.png"), this.#videoSystemModel.getSerie("The Office"));
+        this.#videoSystemModel.assignActor(new Person("Mindy", "", "Kaling", new Date(1979, 6, 24), "./images/Actores/MindyKaling.png"), this.#videoSystemModel.getSerie("The Office"));
+
+
+
 
 
 
 
     }
 
-    handleLogoEvent() {
 
+
+
+
+    /*
+    handleLogoEvent() { 
+ 
     }
+    */
 
     /**
     * Contenido que se carga al entrar en la web.

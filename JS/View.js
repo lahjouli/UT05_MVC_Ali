@@ -1,3 +1,9 @@
+import {
+    Movie,
+    Serie,
+} from "./objetos.js";
+
+
 class View {
     constructor() {
         // Seleccionar los elementos del DOM necesarios
@@ -224,89 +230,119 @@ class View {
 
 
 
+    /**
+  * Muestra los detalles de una producción en la interfaz de usuario.
+  * Actualiza el contenido principal con la información de la producción, incluyendo los directores y actores asociados.
+  * Implementa la vista en el patrón MVC.
+  *
+  * @param {Production} production - La producción a mostrar.
+  * @param {Array} categories - Las categorías de la producción (no utilizadas en esta función).
+  * @param {Array} directors - Los directores asociados a la producción.
+  * @param {Array} actors - Los actores asociados a la producción.
+  */
     showProduction(production, categories, directors, actors) {
+        // Vaciar el contenido principal
         this.main.empty();
 
-        let container = $(`
-            <main>
-                <div class="container">
-                    <div class="card">
-                        <img src="${production.image}" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">${production.title}</h5>
-                            <p class="card-text">${production.synopsis}</p>
-                            <p class="card-text"><small class="text-muted">Last updated ${production.publication.toLocaleTimeString()}</small></p>
-                        </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Directores</h3>
-                            <div class="row">
-                                <!-- Iterar sobre los directores y crear una columna para cada uno -->
-                                ${this.#generateDirectorCards(directors)}
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Actores</h3>
-                            <div class="row">
-                                <!-- Iterar sobre los actores y crear una columna para cada uno -->
-                                ${this.#generateActorCards(actors)}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        `);
+        // Determinar si la producción es una serie o una película
+        let productionType = production instanceof Serie ? "Serie" : "Película";
 
+        // Crear el contenedor principal
+        let container = $(`
+      <main>
+        <div class="container">
+          <div class="card">
+            <img src="${production.image}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">${production.title} (${productionType})</h5>
+              <p class="card-text">${production.synopsis}</p>
+              <p class="card-text"><small class="text-muted">Última actualización ${production.publication.toLocaleTimeString()}</small></p>
+              <p class="card-text">Nacionalidad: ${production.nacionality}</p>
+            </div>
+          </div>
+  
+          <!-- Sección de directores -->
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Directores</h3>
+              <div class="row">
+                <!-- Iterar sobre los directores y crear una columna para cada uno -->
+                ${this.#generateDirectorCards(directors)}
+              </div>
+            </div>
+          </div>
+  
+          <!-- Sección de actores -->
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Actores</h3>
+              <div class="row">
+                <!-- Iterar sobre los actores y crear una columna para cada uno -->
+                ${this.#generateActorCards(actors)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    `);
+
+        // Agregar el contenedor al contenido principal
         this.main.append(container);
     }
 
+
+
+    /**
+ * Genera las tarjetas de los directores para mostrar en la interfaz de usuario.
+ *
+ * @param {Array} directors - Los directores de la producción.
+ * @returns {string} - Las tarjetas de los directores en formato HTML.
+ */
     #generateDirectorCards(directors) {
         let cards = '';
+
         for (const director of directors) {
             cards += `
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="${director.image}" class="card-img-top" alt="Imagen del director">
-                        <div class="card-body">
-                            <h5 class="card-title">${director.name}</h5>
-                        </div>
-                    </div>
-                </div>
-            `;
+        <div class="col-md-4">
+          <div class="card">
+            <img src="${director.picture}" class="card-img-top" alt="Imagen del director">
+            <div class="card-body">
+              <!-- Mostrar el nombre completo del director -->
+              <h5 class="card-title">${director.name} ${director.lastName2} ${director.lastName1}</h5>
+            </div>
+          </div>
+        </div>
+      `;
         }
+
         return cards;
     }
 
+    /**
+     * Genera las tarjetas de los actores para mostrar en la interfaz de usuario.
+     *
+     * @param {Array} actors - Los actores de la producción.
+     * @returns {string} - Las tarjetas de los actores en formato HTML.
+     */
     #generateActorCards(actors) {
         let cards = '';
+
         for (const actor of actors) {
             cards += `
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="${actor.image}" class="card-img-top" alt="Imagen del actor">
-                        <div class="card-body">
-                            <h5 class="card-title">${actor.name}</h5>
-                        </div>
-                    </div>
-                </div>
-            `;
+        <div class="col-md-4">
+          <div class="card">
+            <img src="${actor.picture}" class="card-img-top" alt="Imagen del actor">
+            <div class="card-body">
+              <!-- Mostrar el nombre completo del actor -->
+              <h5 class="card-title">${actor.name} ${actor.lastName2} ${actor.lastName1}</h5>
+            </div>
+          </div>
+        </div>
+      `;
         }
+
         return cards;
     }
-
-
-
-
-
-
-
-
-
 
 
 

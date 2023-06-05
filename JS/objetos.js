@@ -6,14 +6,13 @@ export class Person {
     #lastName2;
     #born;
     #picture;
-    #ID; // ID añadido para identdicar a los actores
+    #ID; // ID añadido para identificar a los actores
 
-
-    constructor(name, lastName1, born, lastName2, picture, ID) {
+    constructor(name, lastName1, lastName2, born, picture, ID) {
         this.#name = name;
         this.#lastName1 = lastName1;
-        this.#born = born;
         this.#lastName2 = lastName2;
+        this.#born = born;
         this.#picture = picture;
         this.#ID = ID;
     }
@@ -69,6 +68,7 @@ export class Person {
         return `${this.#name} ${this.#lastName1} ${this.#lastName2} (${this.#born})`;
     }
 }
+
 
 
 
