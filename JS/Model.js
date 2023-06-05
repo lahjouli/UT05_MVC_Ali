@@ -1,5 +1,4 @@
 
-"use strict";
 
 import {
     Person,
@@ -12,7 +11,8 @@ import {
 } from "./objetos.js";
 
 
-export const VideoSystem = (function () {
+
+const VideoSystem = (function () {
 
     let instance = null; // Variable que almacena la única instancia del objeto VideoSystem
 
@@ -43,6 +43,7 @@ export const VideoSystem = (function () {
             }
 
             //MÉTODOS de la clase
+
 
 
             // Getter para el atributo name
@@ -137,6 +138,33 @@ export const VideoSystem = (function () {
             }
 
 
+            // Factoría de usuarios
+            // Crea y devuelve una instancia de la clase User
+            createUser(username, email, password) {
+                // Comprobamos si el nombre de usuario es válido
+                if (!username || username.trim() === "") {
+                    throw new Error("El nombre de usuario es requerido.");
+                }
+
+                // Buscamos la posición del usuario en la lista de usuarios
+                const position = this.#users.findIndex((u) => u.username === username);
+
+                let user;
+
+                if (position === -1) {
+                    // Si el usuario no existe, creamos una nueva instancia de User
+                    user = new User(username, email, password);
+                    // Agregamos el usuario a la lista de usuarios
+                    this.#users.push(user);
+                } else {
+                    // Si el usuario existe, recuperamos la instancia existente
+                    user = this.#users[position];
+                }
+
+                return user;
+            }
+
+
 
             removeCategory(category) {
                 // Verificar que la categoría es una instancia de Category
@@ -219,9 +247,9 @@ export const VideoSystem = (function () {
                     throw new Error("El usuario no es válido");
                 }
 
+                console.log(this.#users);
                 // Comprueba si el username ya existe
-                if (this.#users.some(u => u.username === user.username)) {
-                    console.log(this.#users);
+                if (this.#users.some((u) => u.username === user.username)) {
                     throw new Error("El username ya existe");
                 }
 
@@ -257,7 +285,7 @@ export const VideoSystem = (function () {
             get categories() {
                 const categories = this.#categories; // obtener las categorias
                 function* generator() { // crear un generador
-                    for (let i = 0; i < categories.length; i++) { // iterar sobre las categorias
+                    for (let i = 1; i < categories.length; i++) { // iterar sobre las categorias
                         yield categories[i].category; // devolver la catgoria actual
                     }
                 }
@@ -291,6 +319,7 @@ export const VideoSystem = (function () {
 
 
 
+            /*
             // Devuelve un iterador que permite recuperar las producciones de una categoría
             *getProductionCategory(category) {
                 // Comprobamos que la categoría es una instancia de Category
@@ -311,6 +340,8 @@ export const VideoSystem = (function () {
                     yield production;
                 }
             }
+
+            */
 
             // Elimina una producción de una categoría
             deassignCategory(category, ...productions) {
@@ -812,11 +843,107 @@ export const VideoSystem = (function () {
                 // Devolvemos el objeto iterador generado por la función
                 return actorGenerator();
             }
+
+            // ...
+
+
+
+            // ...
+            // Método para obtener producciones aleatorias
+            *randomProductions() {
+                const array = [];
+                const length = this.#productions.length;
+
+                // Generar 3 producciones aleatorias
+                for (let i = 0; i < 3; i++) {
+                    let newPosition;
+                    let production;
+
+                    // Obtener una posición aleatoria en el array de producciones
+                    do {
+                        newPosition = Math.floor(Math.random() * length);
+                        production = this.#productions[newPosition];
+                    } while (array.includes(production)); // Verificar que la producción no esté en el array de producciones ya obtenidas
+
+                    array.push(production);
+                    yield production;
+                }
+            }
+
+
+            getMovie(title, nationality = "", publication, synopsis = "", image = "", resource = new Resource(22, "www.default.com"), locations = []) {
+                // Verificar si el título está indefinido o vacío
+                if (typeof title === "undefined" || title === "")
+                    throw new Error("Title must be provided");
+
+                // Buscar la posición de la producción en la lista
+                const position = this.#productions.findIndex((production) => {
+                    return title.localeCompare(production.title, "en", { sensitivity: "base" }) == 0;
+                });
+
+                let production;
+                if (position === -1) {
+                    // Crear una copia del array de ubicaciones pasado por el usuario para evitar mantener su referencia
+                    locations = [...locations];
+                    // Si la producción no existe, crear una nueva instancia de Movie
+                    production = new Movie(
+                        title,
+                        nationality,
+                        publication,
+                        synopsis,
+                        image,
+                        resource,
+                        locations
+                    );
+                } else {
+                    // Si la producción existe, recuperarla de la lista
+                    production = this.#productions[position];
+                }
+
+                return production;
+            }
+
+
+            *getCategoryProduction(production) {
+                if (!(production instanceof Production)) {
+                    throw new Error("Valor inválido para 'production'. Se espera una instancia de Production.");
+                }
+
+                let categories = this.#categories;
+                for (const category of categories) {
+                    if (category.productions.includes(production)) {
+                        yield category.category;
+                    }
+                }
+            }
+
+
+            *getCastDirector(production) {
+                if (!(production instanceof Production)) {
+                    throw new Error("Valor inválido para 'production'. Se espera una instancia de Production.");
+                }
+
+                // Obtenemos los directores que han dirigido la película
+                for (let director of this.#directors.filter(function (prod) {
+                    return prod.productions.some(p => p.title == production.title);
+                })) {
+                    yield director.director;
+                }
+            }
+
+
+
+
+
+
+
+
+
         }
 
         const name = "VideoSystem"; // Nombre del sistema
         return Object.freeze(new VideoSystem(name)); // Retorna una instancia del objeto VideoSystem y la congela para que no se pueda modificar
-    }
+    };
 
     return {
         getInstance() { // Retorna la única instancia del objeto VideoSystem
@@ -827,3 +954,6 @@ export const VideoSystem = (function () {
         }
     }
 })();
+
+
+export default VideoSystem;

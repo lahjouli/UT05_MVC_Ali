@@ -1,0 +1,126 @@
+/* Estilos generales */
+body {
+    padding-top: 70px;
+    font-family: Arial, sans-serif;
+    background-color: #232F3E;
+    color: #FFFFFF;
+  }
+
+
+  main {
+    margin-bottom: 40px;
+  }
+  
+  
+  .container {
+    margin-top: 20px;
+  }
+  
+  h2 {
+    margin-top: 30px;
+    color: #FF9900;
+  }
+  
+  .card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #141E26;
+    border: 1px solid #FF9900;
+  }
+  
+  .card-title {
+    font-weight: bold;
+    color: #FFFFFF;
+  }
+  
+  .card-text {
+    color: #CCCCCC;
+  }
+  
+  /* Estilos de la barra de navegación */
+  .navbar {
+    background-color: #054853;
+    color: #FFFFFF;
+  }
+  
+  .navbar-brand {
+    font-weight: bold;
+    color: #FFFFFF;
+  }
+  
+  .nav-link {
+    color: #FFFFFF;
+  }
+  
+  .nav-link:hover {
+    color: #FF9900;
+  }
+  
+  /* Estilos del footer */
+  footer {
+    padding: 20px 0;
+    color: #FFFFFF;
+    background-color: #141E26;
+    text-align: center;
+  }
+  
+  footer h5 {
+    margin: 15px;
+  }
+  
+  footer a {
+    color: #FFFFFF;
+  }
+  
+  footer a:hover {
+    text-decoration: none;
+    color: #FF9900;
+  }
+
+
+  footer {
+    margin-top: 40px;
+    padding: 20px 0;
+    color: #FFFFFF;
+    background-color: #141E26;
+    text-align: center;
+  }
+  
+  
+  .card-fixed-height {
+    height: 100%;
+  }
+
+  /* Alineación del menú desplegable de categorías */
+  .navbar-collapse {
+    justify-content: flex-end;
+  }
+  
+  .custom-card {
+    max-width: 200px; /* Ajusta el ancho máximo de las tarjetas */
+    height: auto; /* Ajusta la altura de las tarjetas según el contenido */
+}
+
+
+.card {
+  border: none;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card-img-top {
+  height: 300px;
+  object-fit: cover;
+}
+
+.card-title {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+

@@ -116,7 +116,7 @@ export class Resource {
 
     constructor(duration, link) {
         if (!duration || !link) {
-            throw new ResourceError("Se requieren ambos parámetros 'duration' y 'link'");
+            throw new Error("Se requieren ambos parámetros 'duration' y 'link'");
         }
         this.#duration = duration;
         this.#link = link;
@@ -149,7 +149,24 @@ export class Production {
         return this.#title;
     }
 
-}
+    get image (){
+        return this.#image;
+
+    }
+
+    get synopsis(){
+        return this.#synopsis;
+    }
+
+    get publication(){
+        return this.#publication;
+    }
+
+    get nacionality(){
+        return this.#nacionality;
+    }
+
+} 
 
 
 export class Movie extends Production {
@@ -213,6 +230,8 @@ export class Movie extends Production {
     toString() {
         return `${super.toString()} Resource: ${this.#resource}, Locations: ${this.#locations}`;
     }
+
+
 }
 
 
