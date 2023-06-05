@@ -58,7 +58,7 @@ class View {
                <div class="card-body">
                  <h5 class="card-title">${category.name}</h5>
                  <p class="card-text">${category.description}</p>
-                 <a href="${category.pageUrl}" class="btn btn-primary btn-card" data-category="${category.name}">Ver más</a>
+                 <div  href="${category.pageUrl}" class="btn btn-primary btn-card cardA" data-category="${category.name}">Ver más</div>
                </div>
              </div>
            </div>
@@ -85,7 +85,7 @@ class View {
 * pasando como argumento la categoría correspondiente.
 */
     bindProductionsNavCategoryList(handler) {
-        $('.dropdown-item').click(function () {
+        $('.dropdown-item').click( ()=> {
             handler(this.dataset.category);
         });
     }
@@ -99,8 +99,8 @@ class View {
   * Evita la acción predeterminada del enlace y soluciona el problema de desaparición de contenido al hacer clic en el botón.
   */
     bindProductionsCategoryMain(handler) {
-        this.main.on('click', '.card, .btn-primary', function (event) {
-            event.preventDefault();
+        this.main.on('click', '.card, .cardA', function (event) {
+            event.preventDefault();   // sino se boorra en pocos segundos por el problema del (<a></a>)
             const category = $(this).closest('.card').find('.card-title').text();
             handler(category);
         });
