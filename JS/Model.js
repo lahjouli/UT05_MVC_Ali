@@ -443,15 +443,19 @@ const VideoSystem = (function () {
 
 
             // devuelve la posicion del onjeto literal que contiene el actor 
-            #actorPos(actorID) {
+            #actorPos(actor) {
                 for (let i = 0; i < this.#actors.length; i++) {
                     let obj = this.#actors[i].actor;
-                    if (obj.ID === actorID) {
-                        return i; // devolvemos la posicion del actor 
+                    if (
+                        obj.name.localeCompare(actor.name, "en", { sensitivity: "base" }) === 0 &&
+                        obj.lastName1.localeCompare(actor.lastName1, "en", { sensitivity: "base" }) === 0
+                    ) {
+                        return i; // devolvemos la posición del actor
                     }
                 }
                 return -1;
             }
+
 
             removeActor(actor) {
 
@@ -460,7 +464,7 @@ const VideoSystem = (function () {
                     throw new Error("Controlado: El actor debe ser una instacia de la clase Person");
                 }
 
-                let index = this.#actorPos(actor.ID);
+                let index = this.#actorPos(actor);
 
                 // Si El actor NO existe.
                 if (index == -1) {
@@ -483,6 +487,43 @@ const VideoSystem = (function () {
                 return generator();
 
             }
+
+
+            /**
+             * Obtiene una instancia de un actor a partir del nombre y apellidos proporcionados.
+             * Si el actor no existe, se crea una nueva instancia de la clase Person.
+             * @param {string} name - Nombre del actor.
+             * @param {string} lastname1 - Primer apellido del actor.
+             * @param {string} lastname2 - Segundo apellido del actor (opcional).
+             * @param {string} born - Fecha de nacimiento del actor (opcional).
+             * @param {string} picture - URL de la imagen del actor (opcional).
+             * @returns {Person} - Instancia de la clase Person que representa al actor.
+             * @throws {EmptyValueException} - Si el parámetro 'name' está vacío o no está definido.
+             */
+            getActor(name, lastName1, lastName2 = "", born, picture = "") {
+                // Verificar si el nombre está vacío o no está definido
+                if (!name || name.trim() === "") {
+                    throw new EmptyValueException("name");
+                }
+
+                // Buscar al actor en la lista de actores
+                const actor = this.#actors.find((act) => {
+                    return (
+                        name.localeCompare(act.actor.name, "es", { sensitivity: "base" }) === 0 &&
+                        lastName1.localeCompare(act.actor.lastName1, "es", { sensitivity: "base" }) === 0
+                    );
+                });
+
+                // Si se encuentra el actor, retornar la instancia existente
+                if (actor) {
+                    return actor.actor;
+                }
+
+                // Si el actor no existe, crear una nueva instancia de Person
+                return new Person(name, lastName1, lastName2, born, picture);
+            }
+
+
 
 
 
@@ -544,7 +585,10 @@ const VideoSystem = (function () {
                     throw new Error('El tiene que ser un objeto Person.');
                 }
 
-                const index = this.#findDirectorPos(director.ID);
+
+                //#findDirectorPos
+
+                const index = this.#findDirectorPos(director);
 
                 //  El director no existe en el sistema
                 if (index === -1) {
@@ -656,6 +700,45 @@ const VideoSystem = (function () {
                 return this.#directors[posDirector].productions.length;
             }
 
+            /**
+             * Obtiene una instancia de un director a partir del nombre y apellidos proporcionados.
+             * Si el director no existe, se crea una nueva instancia de la clase Person.
+             * @param {string} name - Nombre del director.
+             * @param {string} lastName1 - Primer apellido del director.
+             * @param {string} lastName2 - Segundo apellido del director (opcional).
+             * @param {string} born - Fecha de nacimiento del director (opcional).
+             * @param {string} picture - URL de la imagen del director (opcional).
+             * @returns {Person} - Instancia de la clase Person que representa al director.
+             * @throws {EmptyValueException} - Si el parámetro 'name' está vacío o no está definido.
+             */
+            getDirector(name, lastName1, lastName2 = "", born, picture = "") {
+                // Verificar si el nombre está vacío o no está definido
+                if (name === "undefined" || name === "") {
+                    throw new EmptyValueException("name");
+                }
+
+                // Buscar la posición del director en la lista de directores
+                let position = this.#directors.findIndex((direct) => {
+                    return (
+                        name.localeCompare(direct.director.name, "es", { sensitivity: "base" }) === 0 &&
+                        lastName1.localeCompare(direct.director.lastName1, "es", { sensitivity: "base" }) === 0
+                    );
+                });
+
+                let director;
+                if (position === -1) {
+                    // Si el director no existe, crear una nueva instancia de Person
+                    director = new Person(name, lastName1, lastName2, born, picture);
+                } else {
+                    // Si el director existe, obtener la instancia existente
+                    director = this.#directors[position].director;
+                }
+
+                return director;
+            }
+
+
+
 
 
             /*
@@ -734,7 +817,14 @@ const VideoSystem = (function () {
                 }
 
                 // Obtenemos la posición del director en el array de directores
-                const directorIndex = this.#directors.findIndex(obj => obj.director.ID === director.ID);
+                const directorIndex = this.#directors.findIndex(obj => {
+                    return (
+                        obj.director.name.localeCompare(director.name, "en", { sensitivity: "base" }) === 0 &&
+                        obj.director.lastName1.localeCompare(director.lastName1, "en", { sensitivity: "base" }) === 0 &&
+                        obj.director.lastName2.localeCompare(director.lastName2, "en", { sensitivity: "base" }) === 0
+                    );
+                });
+
                 if (directorIndex === -1) {
                     throw new Error("El director no existe.");
                 }
@@ -748,6 +838,7 @@ const VideoSystem = (function () {
                 // Retornamos el número total de producciones asignadas al director
                 return this.#directors[directorIndex].productions.length;
             }
+
 
             assignActor(actor, ...productions) {
                 // Verificamos si se ha especificado un actor y al menos una producción
@@ -840,25 +931,25 @@ const VideoSystem = (function () {
 
                 // Filtramos los actores que hayan participado en la producción que se está buscando
                 const actorsInProduction = this.#actors.filter(actor => actor.productions.some(p => p.title === production.title));
-
-                console.log(this.#actors);
                 // Iteramos sobre cada actor que haya participado en la producción, retornando su nombre de actor
                 for (const act of actorsInProduction) {
                     yield act.actor;
                 }
             }
 
-            // metodo privado
-            #findDirectorPos(directorID) {
-                let pos = -1;
+            #findDirectorPos(director) {
                 for (let i = 0; i < this.#directors.length; i++) {
-                    if (this.#directors[i].director.ID === directorID) {
-                        pos = i;
-                        break; // opcional, para terminar el bucle si ya se encontró el director
+                    if (
+                        this.#directors[i].director.name.localeCompare(director.name, "en", { sensitivity: "base" }) === 0 &&
+                        this.#directors[i].director.lastName1.localeCompare(director.lastName1, "en", { sensitivity: "base" }) === 0 &&
+                        this.#directors[i].director.lastName2.localeCompare(director.lastName2, "en", { sensitivity: "base" }) === 0
+                    ) {
+                        return i;
                     }
                 }
-                return pos;
+                return -1;
             }
+
 
 
             /**
@@ -869,11 +960,19 @@ const VideoSystem = (function () {
             *getProductionsDirector(director) {
                 // Verificamos que el parámetro director sea una instancia de la clase Person.
                 if (!(director instanceof Person)) {
-                    throw new Error("El parámetro actor debe ser una instancia de Person.");
+                    throw new Error("El parámetro director debe ser una instancia de Person.");
                 }
 
                 // Obtenemos el índice del director en el array de directores.
-                const dirIndex = this.#findDirectorPos(director.ID);
+                const dirIndex = this.#directors.findIndex((dir) => {
+                    return (
+                        dir.director.name.localeCompare(director.name, "en", { sensitivity: "base" }) === 0 &&
+                        dir.director.lastName1.localeCompare(director.lastName1, "en", { sensitivity: "base" }) === 0 &&
+                        dir.director.lastName2.localeCompare(director.lastName2, "en", { sensitivity: "base" }) === 0
+                    );
+                });
+
+                console.log(this.#directors[dirIndex].productions);
 
                 // Recorremos las producciones del director y las vamos generando con yield.
                 for (const production of this.#directors[dirIndex].productions) {
@@ -881,12 +980,13 @@ const VideoSystem = (function () {
                 }
             }
 
-            #findActorPos(actorID) {
-
+            #findActorPos(actor) {
                 for (let i = 0; i < this.#actors.length; i++) {
-                    if (this.#actors[i].actor.ID === actorID) {
+                    if (
+                        this.#actors[i].actor.name.localeCompare(actor.name, "en", { sensitivity: "base" }) === 0 &&
+                        this.#actors[i].actor.lastName1.localeCompare(actor.lastName1, "en", { sensitivity: "base" }) === 0
+                    ) {
                         return i;
-
                     }
                 }
                 return -1;
@@ -908,13 +1008,14 @@ const VideoSystem = (function () {
                 }
 
                 // Se obtiene el índice del actor en el array de actores
-                const actorIndex = this.#findActorPos(actor.ID);
-                //console.log(this.#actors[actorIndex].productions)
+                const actorIndex = this.#findActorPos(actor);
+
                 // Se recorre el array de producciones del actor y se retorna un generador con ellas
                 for (let production of this.#actors[actorIndex].productions) {
                     yield production;
                 }
             }
+
 
             /** array
              * Obtiene todas las producciones de una categoría.
@@ -957,19 +1058,19 @@ const VideoSystem = (function () {
                 if (!title || title === "") {
                     throw new EmptyValueException("name");
                 }
-            
+
                 // Buscamos la posición de la serie en el array de producciones
                 const position = this.#productions.findIndex((production) =>
                     title.localeCompare(production.title, "en", { sensitivity: "base" }) == 0
                 );
-            
+
                 let production;
                 if (position === -1) {
                     // Si la serie no existe, creamos una nueva instancia
                     // Creamos copias de los arrays pasados por el usuario para evitar mantener su referencia
                     const copiedLocations = [...locations];
                     const copiedResource = [...resource];
-            
+
                     production = new Serie(
                         title,
                         nationality,
@@ -980,17 +1081,17 @@ const VideoSystem = (function () {
                         copiedLocations,
                         seasons
                     );
-            
+
                     // Agregamos la nueva serie a la lista de producciones
                     this.#productions.push(production);
                 } else {
                     // Si la serie ya existe, la recuperamos de la lista de producciones
                     production = this.#productions[position];
                 }
-            
+
                 return production;
             }
-            
+
 
 
             /**
@@ -1083,6 +1184,7 @@ const VideoSystem = (function () {
             }
 
 
+
             *getCategoryProduction(production) {
                 if (!(production instanceof Production)) {
                     throw new Error("Valor inválido para 'production'. Se espera una instancia de Production.");
@@ -1112,6 +1214,38 @@ const VideoSystem = (function () {
 
 
 
+
+
+
+            // Comprueba si existe un actor
+            // Comprueba si existe un actor
+            checkActor(name, lastName1) {
+                return this.#actors.some((actor) => {
+                    return actor.actor.name === name && actor.actor.lastName1 === lastName1;
+                });
+            }
+
+            // Comprueba si existe un director
+            checkDirector(name, lastName1) {
+                return this.#directors.some((director) => {
+                    return director.director.name === name && director.director.lastName1 === lastName1;
+                });
+            }
+
+
+
+
+
+            // Determina si una persona es actor o director
+            getPersonRole(name, lastName1) {
+                if (this.checkActor(name, lastName1)) {
+                    return "Actor";
+                } else if (this.checkDirector(name, lastName1)) {
+                    return "Director";
+                } else {
+                    return -1;
+                }
+            }
 
 
 

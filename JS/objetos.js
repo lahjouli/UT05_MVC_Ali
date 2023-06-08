@@ -6,15 +6,18 @@ export class Person {
     #lastName2;
     #born;
     #picture;
-    #ID; // ID añadido para identificar a los actores
+    #ID = null; // ID añadido para identificar a los actores
 
-    constructor(name, lastName1, lastName2, born, picture, ID) {
+    constructor(name, lastName1, lastName2 = " ", born, picture) {
         this.#name = name;
-        this.#lastName1 = lastName1;
+        if (lastName1 === undefined || lastName1.trim() === '') {
+            this.#lastName1 = lastName2.trim();
+        } else {
+            this.#lastName1 = lastName1.trim();
+        }
         this.#lastName2 = lastName2;
         this.#born = born;
         this.#picture = picture;
-        this.#ID = ID;
     }
 
     // getters
@@ -65,9 +68,10 @@ export class Person {
 
     // toString method
     toString() {
-        return `${this.#name} ${this.#lastName1} ${this.#lastName2} (${this.#born})`;
+        return `${this.name} ${this.lastName1} ${this.lastName2} (${this.born})`;
     }
 }
+
 
 
 
@@ -149,24 +153,24 @@ export class Production {
         return this.#title;
     }
 
-    get image (){
+    get image() {
         return this.#image;
 
     }
 
-    get synopsis(){
+    get synopsis() {
         return this.#synopsis;
     }
 
-    get publication(){
+    get publication() {
         return this.#publication;
     }
 
-    get nacionality(){
+    get nacionality() {
         return this.#nacionality;
     }
 
-} 
+}
 
 
 export class Movie extends Production {
